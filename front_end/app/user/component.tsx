@@ -1,9 +1,16 @@
 "use client"
 import Header from '@/components/Header'
-import React from 'react'
-import { Table } from 'antd'
+import React, { useEffect } from 'react'
+import { message, Table } from 'antd'
+import { useState } from 'react'
+import { apiClient } from '../api/auth/repository'
 
-const Component = ({datacolumns} : any) => {
+const Component = ({datacolumns, tableData, loading, fetchData} : any) => {
+
+  useEffect(()=>{
+    fetchData();
+  },);
+ 
   return (
     <div>
       <Header/>
@@ -15,7 +22,10 @@ const Component = ({datacolumns} : any) => {
         <div className='mt-3'>
               <Table
         columns={datacolumns}
+        dataSource={tableData}
         bordered
+        className='font-bold'
+        rowKey="id"
         /> 
         </div>
      

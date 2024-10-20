@@ -1,28 +1,45 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react'
 import Component from './component'
+import { apiClient } from '../api/auth/repository';
+import { message } from 'antd';
+import Image from 'next/image';
 
 const UserPage = () => {
 
-    const dataSource = [
-        {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address: '10 Downing Street',
-        },
-        {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address: '10 Downing Street',
-        },
-      ];
+      const [tableData, setTableData] = useState([]);
+      const [loading, setLoading] = useState(false);
+      
+      const fetchData = async ()=>{
+        try{
+          setLoading(true);
+          const response = await apiClient.get("/adminshapedetails");
+          setTableData(response.data);
+          console.log(response.data);
+          setLoading(false);
+        }catch(error){
+          setLoading(false);
+          message.error("Failed to load data");
+          console.log("The error: ", error);
+        }
+      }
+
+      const renderShapeColor = (shape:any, color:any) =>{
+        const imagePath =  `/${shape}_${color}.png`;
+        return(
+          <Image
+          src = {imagePath}
+          alt={`${shape} ${color}`}
+          width={30}
+          height={20}/>
+        )
+      }
       
       const columns = [
         {
           title: 'Timestamp',
-          dataIndex: 'timestamp',
-          key: 'timestamp',
+          dataIndex: 'created_at',
+          key: 'created_at',
         },
         {
           title: 'Name',
@@ -33,6 +50,7 @@ const UserPage = () => {
           title: 'Shapecolor',
           dataIndex: 'shapecolor',
           key: 'shapecolor',
+          render: (text : any, record : any) => renderShapeColor(record.shape, record.color)
         },
       ];
       
@@ -40,6 +58,9 @@ const UserPage = () => {
     <div>
       <Component
       datacolumns = {columns}
+      tableData = {tableData}
+      loading = {loading}
+      fetchData = {fetchData}
       />
     </div>
   )
