@@ -1,11 +1,13 @@
 "use client";
 import AdminHeader from "@/components/Header";
-import { Button, Table, Modal, Form, Input, Select } from "antd";
-import React from "react";
+import { Button, Table, Modal, Form, Input, Select, message } from "antd";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { apiClient } from "../api/auth/repository";
 
-const Component = ({ dataColumns }: any) => {
+const Component = ({ dataColumns,fetchTableData, tableData, loading}: any) => {
   const [open, setOpen] = useState(false);
+  const [form] = Form.useForm(); // Get form instance
 
   const showModal = () => {
     setOpen(true);
@@ -15,8 +17,28 @@ const Component = ({ dataColumns }: any) => {
     setOpen(false);
   };
 
-  const submitData = () => {
-    setOpen(false);
+
+  useEffect(()=>{
+    fetchTableData();
+  },[]);
+
+  const submitData = async () => {
+    try{
+
+      const values = await form.validateFields();
+
+      const response = await apiClient.post('/submitshape', values);
+
+      message.success("Shape submitted successfully!");
+
+      setOpen(false);
+      form.resetFields();
+      fetchTableData();
+      console.log("Response:", response.data);
+    }catch(error){
+      console.error("Error submitting data: ", error);
+      message.error("Error submitting shape data");
+    }
   };
   return (
     <div>
@@ -45,6 +67,7 @@ const Component = ({ dataColumns }: any) => {
             ]}
           >
             <Form
+              form = {form}
               layout="vertical"
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -88,7 +111,14 @@ const Component = ({ dataColumns }: any) => {
         <div className="mt-4">
           <p className="font-bold text-sm">Shapes Table Data</p>
           <div className="mt-3">
-            <Table columns={dataColumns} bordered />
+            <Table columns={dataColumns} 
+            dataSource={tableData}
+            rowKey= "id"
+            loading = {loading} 
+            bordered 
+            className="font-bold"
+          
+            />
           </div>
         </div>
       </div>
