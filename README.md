@@ -15,7 +15,7 @@ Reason: I have been busy with preparing with a certification exam in addition to
 <h1>Proof of Concept</h1>
 <h2>Photo Prrof</h2>
 Link to Drive: https://drive.google.com/drive/folders/18RDyyNN4pqLBatjJIDtpJobcfZWWyK_y
-<h2> Video Proof: </h2>
+<h2> Video Proof: https://youtu.be/6DESasa2jbk </h2>
 
 <h1>Functionalities</h1>
 <ul>
